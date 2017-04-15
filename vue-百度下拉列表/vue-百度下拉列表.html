@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="telephone=no,email=no" name="format-detection"/>
+    <meta name="renderer" content="webkit">
+    <!--360模式固定极速模式-->
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <!--禁止百度转码-->
+    <title>百度下拉列表</title>
+    <script src="../static/vue.js"></script>
+    <script src="../static/vue-resource.js"></script>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+        ul li{
+            list-style:none;
+            font-size:14px;
+            line-height:30px;
+            color:#666;
+            width:500px;
+        }
+        .search-list{
+            width:600px;
+            margin:50px auto;
+        }
+        .search-list input{
+            width:500px;
+            height:38px;
+            line-height:38px;
+            border:1px solid #ddd;
+            border-radius:4px;
+            color:#333;
+            outline:none;
+            padding-left:5px;
+        }
+        .select{
+            background:#abcdef;
+            color:#fff;
+        }
+        .search-list p{
+            font-size:16px;
+            color:#666;
+            margin-top:15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-list">
+        <input type="text" v-model = "msg" @keyup = "get($event)" @keydown.down = "changeDown()" @keydown.up.prevent = "changeUp()">
+        <ul>
+            <li v-for="item in myData" :class="{select : $index == now}">
+                {{item}}
+            </li>
+        </ul>
+        <p v-show="myData.length == 0">暂无数据...</p>
+    </div>
+
+    <script>
+        window.onload = function(){
+            new Vue ({
+                el : '.search-list',
+                data : {
+                    msg : '',
+                    myData : [],
+                    now : -1
+                },
+                methods : {
+                    get(ev){
+                        if(ev.keyCode == 38 || ev.keyCode == 40)return;
+                        this.$http.jsonp(
+                            'https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su',
+                            {
+                                wd : this.msg
+                            },
+                            {
+                                jsonp : 'cb'
+                            }
+                        ).then(function(res){
+                            this.myData = res.data.s
+                        },function(){})
+                    },
+                    changeDown(){
+                        this.now++;
+                        if(this.now == this.myData.length)this.now = -1;
+                        this.msg = this.myData[this.now];
+                    },
+                    changeUp(){
+                        this.now--;
+                        if(this.now == -2) this.now = this.myData.length - 1;
+                        this.msg = this.myData[this.now]
+                    }
+                }
+            })
+        }
+    </script>
+</body>
+</html>

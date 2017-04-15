@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="telephone=no,email=no" name="format-detection"/>
+    <meta name="renderer" content="webkit">
+    <!--360模式固定极速模式-->
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <!--禁止百度转码-->
+    <title>简易留言板</title>
+    <link rel="stylesheet" href="../static/bootstrap.min.css">
+    <script src="../static/jquery-2.1.1.min.js"></script>
+    <script src="../static/bootstrap.js"></script>
+    <script src="../static/vue.js"></script>
+    <script src="../static/vue-resource.js"></script>
+
+    <style>
+
+    </style>
+    <script>
+        window.onload = function(){
+            new Vue ({
+                el:'#mybox',
+                data:{
+                    myData:[
+                        {
+                            name:'stella',
+                            age:22
+                        },
+                        {
+                            name:'ivan',
+                            age:22
+                        }
+                    ],
+                    username:'',
+                    userage:'',
+                    nowIndex:-1
+                },
+                methods:{
+                    add:function(){
+                        this.myData.push({
+                            name:this.username,
+                            age:this.userage
+                        });
+                        this.username='';
+                        this.userage='';
+                    },
+                    deleteMsg:function(index){
+                        if(index==-2){
+                            this.myData = []
+                        }else{
+                            this.myData.splice(index,1);
+                        }
+                    }
+                }
+
+            })
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container" id="mybox">
+        <form action="" role="form">
+            <div class="form-group">
+                <label for="useName">用户名：</label>
+                <input v-model="username" type="text" id="useName" name="useName" class="form-control" placeholder="请输入用户名">
+            </div>
+            <div class="form-group">
+                <label for="age">年龄：</label>
+                <input v-model="userage" type="text" id="age" name="age" class="form-control" placeholder="请输入年龄">
+            </div>
+            <div class="form-group">
+                <input type="button" value="添加" class="btn btn-primary" @click="add()">
+                <input type="button" value="重置" class="btn btn-danger">
+            </div>
+        </form>
+        <hr/>
+        <table class="table table-border table-hover">
+            <caption class="h2 text-info">用户信息表</caption>
+            <tr class="text-danger">
+                <th class="text-center">序号</th>
+                <th class="text-center">名字</th>
+                <th class="text-center">年龄</th>
+                <th class="text-center">操作</th>
+            </tr>
+            <tr class="text-center" v-for="item in myData">
+                <td>{{$index+1}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.age}}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#layer" @click="nowIndex=$index">删除</button>
+                </td>
+            </tr>
+            <tr v-show="myData.length!=0">
+                <td colspan="4" class="text-right">
+                    <button class="btn btn-danger btn-sm" @click="nowIndex=-2">删除全部</button>
+                </td>
+            </tr>
+            <tr v-show="myData.length ==0">
+                <td colspan="4" class="text-center text-muted">
+                    <p>暂无数据....</p>
+                </td>
+            </tr>
+        </table>
+        <!--模态框 弹出框-->
+
+        <div class="modal fade bs-example-modal-sm" role="dialog" id="layer">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                        <h4 class="modal-title">确认删除么？</h4>
+                    </div>
+                    <div class="modal-body text-right">
+                        <button type="button" data-dismiss="modal" class="btn btn-primary btn-sm">取消</button>
+                        <button type="button" data-dismiss="modal" class="btn btn-danger btn-sm" @click="deleteMsg(nowIndex)">确认</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
